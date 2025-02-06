@@ -22,27 +22,6 @@
   <img align="right" alt="Coding" width="400" src="https://media2.giphy.com/media/qgQUggAC3Pfv687qPC/giphy.gif"/>
 </div>
 
-```javascript
-const aboutMe = {
-    name: "I Putu Indrawan",
-    username: "siputzx",
-    location: "Lampung, Indonesia 🇮🇩",
-    currentStatus: {
-        learning: ["Node.js", "Express", "MongoDB"],
-        interests: ["AI", "Backend Development", "API"],
-        hobbies: ["Coding", "Problem Solving", "Learning"]
-    },
-    skills: {
-        languages: ["JavaScript", "TypeScript"],
-        backend: ["Node.js", "Express.js"],
-        databases: ["MongoDB", "MySQL"],
-        tools: ["Git", "Postman", "VSCode"],
-        learning: ["AWS", "Docker", "GraphQL"]
-    },
-    funFact: "I believe coding is like magic ✨"
-};
-```
-
 <div align="center">
   <h2>💫 Connect With Me</h2>
   
