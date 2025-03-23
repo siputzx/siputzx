@@ -16,21 +16,36 @@ jobs:
       - uses: actions/checkout@v3
         with:
           token: ${{ secrets.MY_GITHUB_TOKEN }}
-      - name: first commit
+          
+      - name: Create initial log if not exists
+        run: |
+          if [ ! -f log.md ]; then
+            echo "Initial log" > log.md
+            git add log.md
+            git config user.name ${{ secrets.USERNAME }}
+            git config user.email ${{ secrets.EMAIL }}
+            git commit -m "Hello World" || echo "No changes to commit"
+            git push origin main || echo "Nothing to push"
+          fi
+
+      - name: First commit - Add date
         run: date >> log.md
-      - name: second commit
+
+      - name: Second commit
         run: |
           git add .
           git config user.name ${{ secrets.USERNAME }}
           git config user.email ${{ secrets.EMAIL }}
-          git commit -m "Jangan Lupa Follow"
-          git push origin main
-      - name: third commit
+          git commit -m "Jangan Lupa Follow" || echo "No changes to commit"
+          git push origin main || echo "Nothing to push"
+
+      - name: Third commit - Remove last line
         run: sed -i '$ d' log.md
-      - name: finishing
+
+      - name: Finishing
         run: |
           git add .
           git config user.name ${{ secrets.USERNAME }}
           git config user.email ${{ secrets.EMAIL }}
-          git commit -m "Jangan Lupa Follow"
-          git push origin main
+          git commit -m "Jangan Lupa Follow" || echo "No changes to commit"
+          git push origin main || echo "Nothing to push"
