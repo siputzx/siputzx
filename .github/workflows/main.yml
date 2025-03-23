@@ -23,7 +23,7 @@ jobs:
           git add .
           git config user.name ${{ secrets.USERNAME }}
           git config user.email ${{ secrets.EMAIL }}
-          git commit -m "Jangan Lupa Follow @Setiawan007"
+          git commit -m "Janganhh Lupa Follow @Setiawan007"
           git push origin main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
