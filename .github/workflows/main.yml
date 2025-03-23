@@ -14,21 +14,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: first commit
         run: date >> log.md
       - name: second commit
         run: |
           git add .
-          git config user.name 'siputzx'
-          git config user.email '159487561+siputzx@users.noreply.github.com'
+          git config user.name ${{ secrets.USERNAME }}
+          git config user.email ${{ secrets.EMAIL }}
           git commit -m "Jangan Lupa Follow @Setiawan007"
-          git push
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: third commit
         run: sed -i '$ d' log.md
       - name: finishing
         run: |
           git add .
-          git config user.name 'siputzx'
-          git config user.email '159487561+siputzx@users.noreply.github.com'
+          git config user.name ${{ secrets.USERNAME }}
+          git config user.email ${{ secrets.EMAIL }}
           git commit -m "Jangan Lupa Follow @Setiawan007"
-          git push
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
