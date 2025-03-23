@@ -4,40 +4,33 @@ on:
   push:
     branches: [ main ]
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: '30 * * * *'
   workflow_dispatch:
 
 jobs:
   commit:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
-
-      - name: Update log
-        run: date >> log.md
-
-      - name: Commit changes
+      - name: Update and Commit
         env:
           GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
           GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
         run: |
-          git add .
+          date >> log.md
           git config user.name "$GIT_USERNAME"
           git config user.email "$GIT_EMAIL"
-          git commit -m "Auto commit by $GIT_USERNAME"
+          git add log.md
+          git commit -m "Auto update log by $GIT_USERNAME" || exit 0
           git push
-
-      - name: Cleanup log
-        run: sed -i '$ d' log.md
-
-      - name: Final commit
+      - name: Cleanup and Commit
         env:
           GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
           GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
         run: |
-          git add .
+          sed -i '$ d' log.md
           git config user.name "$GIT_USERNAME"
           git config user.email "$GIT_EMAIL"
-          git commit -m "Cleanup log by $GIT_USERNAME"
+          git add log.md
+          git commit -m "Cleanup log by $GIT_USERNAME" || exit 0
           git push
