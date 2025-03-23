@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.MY_GITHUB_TOKEN }}
       - name: first commit
         run: date >> log.md
       - name: second commit
@@ -23,10 +23,8 @@ jobs:
           git add .
           git config user.name ${{ secrets.USERNAME }}
           git config user.email ${{ secrets.EMAIL }}
-          git commit -m "Janganhh Lupa Follow @Setiawan007"
+          git commit -m "Jangan Lupa Follow @Setiawan007"
           git push origin main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: third commit
         run: sed -i '$ d' log.md
       - name: finishing
@@ -36,5 +34,3 @@ jobs:
           git config user.email ${{ secrets.EMAIL }}
           git commit -m "Jangan Lupa Follow @Setiawan007"
           git push origin main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
