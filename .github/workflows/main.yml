@@ -1,13 +1,9 @@
 name: CI
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
   schedule:
-    - cron: '0 */1 * * *'
-  pull_request:
-    branches: [ main ]
+    - cron: '0,30 * * * *'  # Jalankan setiap menit 0 dan 30 setiap jam
 
 jobs:
   build:
@@ -15,22 +11,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          token: ${{ secrets.MY_GITHUB_TOKEN }}
-      - name: first commit
-        run: date >> log.md
-      - name: second commit
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: commit changes
         run: |
+          echo "Update otomatis pada $(date)" > README.md
           git add .
           git config user.name ${{ secrets.USERNAME }}
           git config user.email ${{ secrets.EMAIL }}
-          git commit -m "Jangan Lupa Follow @Setiawan007"
-          git push origin main
-      - name: third commit
-        run: sed -i '$ d' log.md
-      - name: finishing
-        run: |
-          git add .
-          git config user.name ${{ secrets.USERNAME }}
-          git config user.email ${{ secrets.EMAIL }}
-          git commit -m "Jangan Lupa Follow @Setiawan007"
+          git commit -m "Update otomatis setiap 30 menit - Jangan Lupa Follow @Setiawan007"
           git push origin main
