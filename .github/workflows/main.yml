@@ -1,0 +1,43 @@
+name: Greenify
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+jobs:
+  commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Update log
+        run: date >> log.md
+
+      - name: Commit changes
+        env:
+          GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+          GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
+        run: |
+          git add .
+          git config user.name "$GIT_USERNAME"
+          git config user.email "$GIT_EMAIL"
+          git commit -m "Auto commit by $GIT_USERNAME"
+          git push
+
+      - name: Cleanup log
+        run: sed -i '$ d' log.md
+
+      - name: Final commit
+        env:
+          GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+          GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
+        run: |
+          git add .
+          git config user.name "$GIT_USERNAME"
+          git config user.email "$GIT_EMAIL"
+          git commit -m "Cleanup log by $GIT_USERNAME"
+          git push
