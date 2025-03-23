@@ -1,36 +1,34 @@
-name: Greenify
+name: CI
 
 on:
   push:
     branches: [ main ]
-  schedule:
-    - cron: '30 * * * *'
   workflow_dispatch:
+  schedule:
+    - cron: '0 */1 * * *'
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  commit:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Update and Commit
-        env:
-          GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
-          GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
+      - name: first commit
+        run: date >> log.md
+      - name: second commit
         run: |
-          date >> log.md
-          git config user.name "$GIT_USERNAME"
-          git config user.email "$GIT_EMAIL"
-          git add log.md
-          git commit -m "Auto update log by $GIT_USERNAME" || exit 0
+          git add .
+          git config user.name 'siputzx'
+          git config user.email '159487561+siputzx@users.noreply.github.com'
+          git commit -m "Jangan Lupa Follow @Setiawan007"
           git push
-      - name: Cleanup and Commit
-        env:
-          GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
-          GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
+      - name: third commit
+        run: sed -i '$ d' log.md
+      - name: finishing
         run: |
-          sed -i '$ d' log.md
-          git config user.name "$GIT_USERNAME"
-          git config user.email "$GIT_EMAIL"
-          git add log.md
-          git commit -m "Cleanup log by $GIT_USERNAME" || exit 0
+          git add .
+          git config user.name 'siputzx'
+          git config user.email '159487561+siputzx@users.noreply.github.com'
+          git commit -m "Jangan Lupa Follow @Setiawan007"
           git push
