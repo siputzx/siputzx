@@ -1,13 +1,9 @@
 name: CI
 
 on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
   schedule:
-    - cron: '0 */1 * * *'
-  pull_request:
-    branches: [ main ]
+    - cron: '0 */1 * * *'  # Hanya jalankan setiap 1 jam
+  workflow_dispatch:        # Bisa dijalankan manual jika perlu
 
 jobs:
   build:
@@ -24,28 +20,24 @@ jobs:
             git add log.md
             git config user.name ${{ secrets.USERNAME }}
             git config user.email ${{ secrets.EMAIL }}
-            git commit -m "Hello World" || echo "No changes to commit"
-            git push origin main || echo "Nothing to push"
+            git commit -m "Hello World"
+            git push origin main
           fi
 
-      - name: First commit - Add date
-        run: date >> log.md
-
-      - name: Second commit
+      - name: Update log with date
         run: |
-          git add .
+          echo "$(date)" >> log.md
+          git add log.md
           git config user.name ${{ secrets.USERNAME }}
           git config user.email ${{ secrets.EMAIL }}
-          git commit -m "Jangan Lupa Follow" || echo "No changes to commit"
+          git commit -m "Jangan Lupa Follow @Setiawan007" || echo "No changes to commit"
           git push origin main || echo "Nothing to push"
 
-      - name: Third commit - Remove last line
-        run: sed -i '$ d' log.md
-
-      - name: Finishing
+      - name: Clean last line
         run: |
-          git add .
+          sed -i '$ d' log.md
+          git add log.md
           git config user.name ${{ secrets.USERNAME }}
           git config user.email ${{ secrets.EMAIL }}
-          git commit -m "Jangan Lupa Follow" || echo "No changes to commit"
+          git commit -m "Jangan Lupa Follow @Setiawan007" || echo "No changes to commit"
           git push origin main || echo "Nothing to push"
