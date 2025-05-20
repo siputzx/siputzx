@@ -2,7 +2,7 @@ name: CI
 
 on:
   schedule:
-    - cron: '0 */1 * * *'  # Hanya jalankan setiap 1 jam
+    - cron: '*/20 * * * *'  # Hanya jalankan setiap 1 jam
   workflow_dispatch:        # Bisa dijalankan manual jika perlu
 
 jobs:
@@ -30,7 +30,7 @@ jobs:
           git add log.md
           git config user.name ${{ secrets.USERNAME }}
           git config user.email ${{ secrets.EMAIL }}
-          git commit -m "Jangan Lupa Follow @Setiawan007" || echo "No changes to commit"
+          git commit -m "Jangan Lupa Follow @siputzx_" || echo "No changes to commit"
           git push origin main || echo "Nothing to push"
 
       - name: Clean last line
@@ -39,5 +39,5 @@ jobs:
           git add log.md
           git config user.name ${{ secrets.USERNAME }}
           git config user.email ${{ secrets.EMAIL }}
-          git commit -m "Jangan Lupa Follow @Setiawan007" || echo "No changes to commit"
+          git commit -m "Jangan Lupa Follow @siputzx_" || echo "No changes to commit"
           git push origin main || echo "Nothing to push"
