@@ -1,0 +1,500 @@
+   </script><!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>siputzx api</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --accent-gradient: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4);
+            --glass-bg: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.05);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+        }
+
+        * {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0a;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
+            overflow-x: hidden;
+        }
+
+        .particles-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 2;
+        }
+
+        .ultra-luxury-text {
+            background: linear-gradient(180deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.03em;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 300;
+        }
+
+        .premium-accent {
+            background: var(--accent-gradient);
+            background-size: 300% 100%;
+            animation: shimmer 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { background-position: 300% 0; }
+            50% { background-position: -300% 0; }
+        }
+
+        .ultra-glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ultra-glass::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.02), transparent);
+            transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .ultra-glass:hover::before {
+            left: 100%;
+        }
+
+        .luxury-shadow {
+            box-shadow: 
+                0 4px 16px rgba(0, 0, 0, 0.3),
+                0 8px 32px rgba(0, 0, 0, 0.2),
+                0 16px 64px rgba(0, 0, 0, 0.1);
+        }
+
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(40px) scale(0.95);
+            animation: fadeInUp 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .fade-in-up-delay-1 {
+            animation-delay: 0.3s;
+        }
+
+        .fade-in-up-delay-2 {
+            animation-delay: 0.6s;
+        }
+
+        .fade-in-up-delay-3 {
+            animation-delay: 0.9s;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .ultra-hover {
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .ultra-hover:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 
+                0 8px 24px rgba(59, 130, 246, 0.1),
+                0 16px 48px rgba(139, 92, 246, 0.08),
+                0 32px 64px rgba(0, 0, 0, 0.3);
+        }
+
+        .documentation-btn {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+        }
+
+        .documentation-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--accent-gradient);
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        .documentation-btn:hover::before {
+            opacity: 0.1;
+        }
+
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .floating-orb {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.1), transparent);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-orb:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: -10%;
+            animation-delay: 0s;
+        }
+
+        .floating-orb:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            right: -5%;
+            animation-delay: 2s;
+        }
+
+        .floating-orb:nth-child(3) {
+            width: 150px;
+            height: 150px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { 
+                transform: translate(0, 0) scale(1);
+                opacity: 0.3;
+            }
+            50% { 
+                transform: translate(20px, -20px) scale(1.1);
+                opacity: 0.6;
+            }
+        }
+
+        .sponsor-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 24px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.03));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .sponsor-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: var(--accent-gradient);
+            border-radius: 24px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        .sponsor-card:hover::before {
+            opacity: 1;
+        }
+
+        .sponsor-link {
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .sponsor-link:hover .sponsor-text {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transform: translateY(-2px);
+        }
+
+        .sponsor-link:hover .sponsor-dot {
+            background: var(--accent-gradient);
+            transform: scale(1.5);
+        }
+
+        .text-shadow {
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .grain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.02;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcz4KICAgIDxmaWx0ZXIgaWQ9Im5vaXNlIj4KICAgICAgPGZlVHVyYnVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuOSIgbnVtT2N0YXZlcz0iNCIgc2VlZD0iMiIgc3RpdGNoVGlsZXM9InN0aXRjaCIvPgogICAgPC9maWx0ZXI+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNub2lzZSkiIG9wYWNpdHk9IjAuNCIvPgo8L3N2Zz4K');
+            z-index: 10;
+        }
+
+        @media (max-width: 768px) {
+            .ultra-luxury-text {
+                font-size: 3.5rem;
+                line-height: 1;
+            }
+            
+            .floating-orb {
+                display: none;
+            }
+        }
+
+        .cursor-follower {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.3), transparent);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: screen;
+            transition: transform 0.1s ease;
+        }
+    </style>
+</head>
+<body class="text-white relative">
+    <div class="particles-container" id="particles-js"></div>
+    
+    <div class="floating-elements">
+        <div class="floating-orb"></div>
+        <div class="floating-orb"></div>
+        <div class="floating-orb"></div>
+    </div>
+
+    <div class="cursor-follower" id="cursor-follower"></div>
+
+    <main class="content-wrapper relative min-h-screen flex flex-col justify-center items-center px-6 py-20">
+        <div class="flex flex-col items-center space-y-20 max-w-6xl mx-auto text-center">
+            
+            <header class="fade-in-up space-y-8">
+                <h1 class="text-6xl md:text-8xl lg:text-9xl xl:text-[10rem] ultra-luxury-text text-shadow">
+                    ytdlku
+                </h1>
+                
+                <div class="flex justify-center">
+                    <div class="w-20 h-px premium-accent rounded-full"></div>
+                </div>
+                
+                <p class="text-zinc-400 text-xs md:text-sm font-light tracking-[0.3em] uppercase">
+                    This is a service created by Siputzx
+                </p>
+            </header>
+            
+            <nav class="fade-in-up fade-in-up-delay-1">
+                <a href="/swagger" 
+                   class="documentation-btn group inline-flex items-center px-12 py-5 ultra-glass rounded-2xl ultra-hover relative z-10">
+                    <span class="text-sm md:text-base font-light tracking-wide mr-4 text-zinc-100 relative z-10">
+                        Documentation
+                    </span>
+                    <svg class="w-5 h-5 text-zinc-300 group-hover:text-white group-hover:translate-x-2 transition-all duration-700 relative z-10" 
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                </a>
+            </nav>
+        </div>
+        
+        <aside class="w-full max-w-6xl px-6 mt-28 fade-in-up fade-in-up-delay-2">
+            <div class="relative">
+                <div class="sponsor-card luxury-shadow group">
+                    <img 
+                        src="https://raw.githubusercontent.com/siputzx/siputzx/main/BANNER%20ATLSERVER.png" 
+                        alt="Atlantic Server" 
+                        class="w-full h-36 md:h-52 lg:h-60 object-cover transition-all duration-1000 group-hover:scale-105"
+                        loading="lazy"
+                    />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                </div>
+                
+                <div class="mt-16 flex justify-center fade-in-up fade-in-up-delay-3">
+                    <a href="https://atlantic-server.com" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       class="sponsor-link group inline-flex items-center space-x-4">
+                        <div class="sponsor-dot w-1.5 h-1.5 rounded-full bg-zinc-500 transition-all duration-700"></div>
+                        <span class="sponsor-text text-zinc-400 text-sm font-light tracking-[0.2em] uppercase transition-all duration-700">
+                            atlantic-server.com
+                        </span>
+                        <div class="sponsor-dot w-1.5 h-1.5 rounded-full bg-zinc-500 transition-all duration-700"></div>
+                    </a>
+                </div>
+            </div>
+        </aside>
+    </main>
+    
+    <div class="grain-overlay"></div>
+
+    <script>
+        particlesJS('particles-js', {
+            particles: {
+                number: { 
+                    value: 120, 
+                    density: { enable: true, value_area: 600 } 
+                },
+                color: { 
+                    value: ['#3b82f6', '#8b5cf6', '#06b6d4', '#00ff00'] 
+                },
+                shape: { 
+                    type: ['circle', 'triangle', 'edge'],
+                    stroke: { width: 1, color: '#3b82f6' }
+                },
+                opacity: { 
+                    value: 0.3, 
+                    random: true, 
+                    anim: { 
+                        enable: true, 
+                        speed: 2, 
+                        opacity_min: 0.1, 
+                        sync: false 
+                    } 
+                },
+                size: { 
+                    value: 3, 
+                    random: true, 
+                    anim: { 
+                        enable: true, 
+                        speed: 3, 
+                        size_min: 0.5, 
+                        sync: false 
+                    } 
+                },
+                line_linked: { 
+                    enable: true, 
+                    distance: 120, 
+                    color: '#3b82f6', 
+                    opacity: 0.2, 
+                    width: 1.5 
+                },
+                move: { 
+                    enable: true, 
+                    speed: 2, 
+                    direction: 'none', 
+                    random: true, 
+                    straight: false, 
+                    out_mode: 'bounce', 
+                    bounce: true,
+                    attract: {
+                        enable: true,
+                        rotateX: 600,
+                        rotateY: 600
+                    }
+                }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: { 
+                    onhover: { 
+                        enable: true, 
+                        mode: ['repulse', 'bubble'] 
+                    }, 
+                    onclick: { 
+                        enable: true, 
+                        mode: 'push' 
+                    }, 
+                    resize: true 
+                },
+                modes: { 
+                    repulse: { 
+                        distance: 150, 
+                        duration: 0.4 
+                    }, 
+                    push: { 
+                        particles_nb: 6 
+                    },
+                    bubble: {
+                        distance: 200,
+                        size: 6,
+                        duration: 2,
+                        opacity: 0.8,
+                        speed: 3
+                    }
+                }
+            },
+            retina_detect: true
+        });
+
+        const cursorFollower = document.getElementById('cursor-follower');
+        let mouseX = 0, mouseY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function updateCursor() {
+            cursorFollower.style.left = mouseX - 10 + 'px';
+            cursorFollower.style.top = mouseY - 10 + 'px';
+            requestAnimationFrame(updateCursor);
+        }
+
+        updateCursor();
+
+        document.addEventListener('mouseenter', () => {
+            cursorFollower.style.opacity = '1';
+        });
+
+        document.addEventListener('mouseleave', () => {
+            cursorFollower.style.opacity = '0';
+        });
+
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in-up').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
