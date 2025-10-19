@@ -9,7 +9,7 @@
 NewBie developer with a little skill in modern web technologies, specializing in building scalable APIs, robust applications, automated testing solutions, and AI prompt engineering. Passionate newbie developer experienced with multiple programming languages and cutting-edge frameworks across JavaScript, Go, Python, and Rust ecosystems.
 
 📍 **Location:** Tulang Bawang, Lampung, Indonesia  
-💼 **Focus:** Full-stack Development, High-Performance APIs, Automation, AI Integration  
+💼 **Focus:** NewBie Development, High-Performance APIs, Automation, AI Integration  
 🌱 **Currently Learning:** Advanced system design, microservices, performance optimization, and AI/ML workflows  
 🤖 **AI Tools:** Experienced with various AI tools and prompt engineering techniques
 
