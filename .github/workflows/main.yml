@@ -1,21 +1,38 @@
-name: Auto Update Data
+name: Debug Auto Update
 
 on:
-  schedule:
-    # Setiap 5 jam sekali
-    - cron: "0 */5 * * *"
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
-  update-data:
+  debug-update:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repository (pakai PAT_TOKEN)
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Cek environment & identity
+        run: |
+          echo "=== Debug Info ==="
+          echo "GitHub Actor   : $GITHUB_ACTOR"
+          echo "Repository     : $GITHUB_REPOSITORY"
+          echo "Current branch : $(git branch --show-current)"
+          echo "Remote URL     : $(git remote get-url origin)"
+          echo "=================="
+          echo
+          echo "🔐 Token check:"
+          if [ -n "${{ secrets.PAT_TOKEN }}" ]; then
+            echo "✅ PAT_TOKEN tersedia"
+          else
+            echo "❌ PAT_TOKEN tidak terbaca!"
+          fi
 
       - name: Generate random data
-        id: gen
         run: |
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           RANDOM_NUM=$((RANDOM % 10000))
@@ -23,12 +40,19 @@ jobs:
           echo "{\"last_update\": \"$TIMESTAMP\", \"random_number\": $RANDOM_NUM, \"random_hex\": \"$RANDOM_HEX\"}" > data.json
           cat data.json
 
-      - name: Commit and push changes
+      - name: Commit dan coba push
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+          TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "siputzx"
+          git config user.email "youremail@example.com"
           git add data.json
-          git commit -m "Auto update $(date -u +"%Y-%m-%d %H:%M:%S")" || echo "No changes to commit"
-          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git HEAD:main
+          git commit -m "Debug commit $(date -u +"%Y-%m-%d %H:%M:%S")" || echo "Tidak ada perubahan"
+          echo
+          echo "=== Debug Push Info ==="
+          git remote -v
+          git status
+          echo "========================"
+          echo
+          echo "Mulai push..."
+          git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }}.git HEAD:main
