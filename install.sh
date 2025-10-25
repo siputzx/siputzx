@@ -84,15 +84,17 @@ alias l='ls -CF'
 DISABLE_AUTO_UPDATE="true"
 EOF
 
-echo -e "\e[1;31m🗑️ Removing .bashrc to fully commit to zsh...\e[0m"
+echo -e "\e[1;31m🗑️ Removing ALL bash files...\e[0m"
 rm -f ~/.bashrc
+rm -f ~/.bash_history
+rm -f ~/.bash_logout
+rm -f ~/.bash_profile
+rm -f ~/.profile
 
 echo -e "\e[1;33m🔧 Creating minimal .bashrc that auto-starts zsh...\e[0m"
 cat > ~/.bashrc << 'EOF'
 #!/bin/bash
-if [ -t 1 ]; then
-    exec zsh
-fi
+exec zsh
 EOF
 
 echo -e "\e[1;32m🐚 Changing default shell to Zsh...\e[0m"
@@ -129,9 +131,7 @@ echo -e "  \e[1;31m❌ npm/yarn/npx commands are aliased to pnpm\e[0m"
 echo ""
 echo -e "  \e[1;33m🎨 Custom prompt: username@hostname:~#\e[0m"
 echo ""
-echo -e "  \e[1;31m⚠️ If you see kernel update notifications, reboot recommended:\e[0m"
-echo -e "     \e[1;37msudo reboot\e[0m"
-echo ""
+echo -e "  \e[1;31m🗑️ ALL bash files have been removed and replaced with zsh\e[0m"
 echo -e "  \e[1;32m🔧 Zsh is now your default shell!\e[0m"
 echo ""
 echo -e "  \e[1;36m🔄 Please restart your terminal or run: exec zsh\e[0m"
