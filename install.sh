@@ -52,8 +52,6 @@ git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-m
 
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 
-git clone --depth 1 -- https://github.com/marlonrichert/zsh-autocomplete.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autocomplete
-
 echo -e "\e[1;33m💾 Backing up original .zshrc...\e[0m"
 cp ~/.zshrc ~/.zshrc.backup 2>/dev/null || true
 
@@ -65,7 +63,6 @@ plugins=(
     git
     zsh-autosuggestions
     zsh-syntax-highlighting
-    zsh-autocomplete
 )
 source $ZSH/oh-my-zsh.sh
 PROMPT='%F{green}%n%f%F{white}@%f%F{blue}%m%f%F{white}:%f%F{yellow}%~%f%F{white}#%f '
