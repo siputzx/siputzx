@@ -23,22 +23,16 @@ echo -e "\e[32m✓\e[0m System updated"
 $SUDO apt install -y curl wget git build-essential unzip > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m Dependencies installed"
 
-curl -fsSL https://deb.nodesource.com/setup_current.x -o /tmp/nodesource_setup.sh
-$SUDO -E bash /tmp/nodesource_setup.sh > /dev/null 2>&1
+wget -qO- https://deb.nodesource.com/setup_current.x | $SUDO -E bash - > /dev/null 2>&1
 $SUDO apt install -y nodejs > /dev/null 2>&1
-rm /tmp/nodesource_setup.sh
 echo -e "\e[32m✓\e[0m Node.js installed"
 
-curl -fsSL https://get.pnpm.io/install.sh -o /tmp/pnpm_install.sh
-sh /tmp/pnpm_install.sh > /dev/null 2>&1
-rm /tmp/pnpm_install.sh
+wget -qO- https://get.pnpm.io/install.sh | sh - > /dev/null 2>&1
 export PNPM_HOME="$HOME/.local/share/pnpm"
 export PATH="$PNPM_HOME:$PATH"
 echo -e "\e[32m✓\e[0m pnpm installed"
 
-curl -fsSL https://bun.sh/install -o /tmp/bun_install.sh
-bash /tmp/bun_install.sh > /dev/null 2>&1
-rm /tmp/bun_install.sh
+wget -qO- https://bun.sh/install | bash > /dev/null 2>&1
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 echo -e "\e[32m✓\e[0m Bun installed"
@@ -46,19 +40,19 @@ echo -e "\e[32m✓\e[0m Bun installed"
 $PNPM_HOME/pnpm install -g pm2@latest > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m PM2 installed"
 
-wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb -O /tmp/cloudflared.deb
-$SUDO dpkg -i /tmp/cloudflared.deb > /dev/null 2>&1
-rm /tmp/cloudflared.deb
+wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+$SUDO dpkg -i cloudflared-linux-amd64.deb > /dev/null 2>&1
+rm cloudflared-linux-amd64.deb
 echo -e "\e[32m✓\e[0m Cloudflared installed"
 
 $SUDO apt install -y zsh > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m Zsh installed"
 
-RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended > /dev/null 2>&1
+wget -qO- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | RUNZSH=no CHSH=no sh -s -- --unattended > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m Oh My Zsh installed"
 
-git clone --quiet https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions 2>/dev/null
-git clone --quiet https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting 2>/dev/null
+git clone --depth=1 -q https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions 2>/dev/null
+git clone --depth=1 -q https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting 2>/dev/null
 echo -e "\e[32m✓\e[0m Zsh plugins installed"
 
 cp ~/.zshrc ~/.zshrc.backup 2>/dev/null || true
