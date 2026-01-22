@@ -23,16 +23,16 @@ echo -e "\e[32m✓\e[0m System updated"
 $SUDO apt install -y curl wget git build-essential unzip > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m Dependencies installed"
 
-wget -qO- https://deb.nodesource.com/setup_current.x | $SUDO -E bash - > /dev/null 2>&1
+curl -fsSL https://deb.nodesource.com/setup_lts.x | $SUDO bash - > /dev/null 2>&1
 $SUDO apt install -y nodejs > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m Node.js installed"
 
-wget -qO- https://get.pnpm.io/install.sh | sh - > /dev/null 2>&1
+curl -fsSL https://get.pnpm.io/install.sh | sh - > /dev/null 2>&1
 export PNPM_HOME="$HOME/.local/share/pnpm"
 export PATH="$PNPM_HOME:$PATH"
 echo -e "\e[32m✓\e[0m pnpm installed"
 
-wget -qO- https://bun.sh/install | bash > /dev/null 2>&1
+curl -fsSL https://bun.sh/install | bash > /dev/null 2>&1
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 echo -e "\e[32m✓\e[0m Bun installed"
@@ -48,7 +48,7 @@ echo -e "\e[32m✓\e[0m Cloudflared installed"
 $SUDO apt install -y zsh > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m Zsh installed"
 
-wget -qO- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | RUNZSH=no CHSH=no sh -s -- --unattended > /dev/null 2>&1
+RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m Oh My Zsh installed"
 
 git clone --depth=1 -q https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions 2>/dev/null
