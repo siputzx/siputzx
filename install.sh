@@ -2,60 +2,61 @@
 
 set -e
 
-echo -e "\e[1;36m==========================================\e[0m"
-echo -e "\e[1;36m🚀 Starting Installation Script\e[0m"
-echo -e "\e[1;36m==========================================\e[0m"
+if [ "$EUID" -eq 0 ]; then
+    SUDO=""
+    CURRENT_USER=$SUDO_USER
+    if [ -z "$CURRENT_USER" ]; then
+        CURRENT_USER="root"
+    fi
+else
+    SUDO="sudo"
+    CURRENT_USER=$USER
+fi
+
+echo -e "\n\e[1;36m🚀 System Setup\e[0m\n"
 
 export DEBIAN_FRONTEND=noninteractive
 
-echo -e "\e[1;33m📦 Updating system packages...\e[0m"
-sudo apt update && sudo apt upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"
+$SUDO apt update && $SUDO apt upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" > /dev/null 2>&1
+echo -e "\e[32m✓\e[0m System updated"
 
-echo -e "\e[1;33m📦 Installing dependencies...\e[0m"
-sudo apt install -y curl wget git build-essential unzip
+$SUDO apt install -y curl wget git build-essential unzip > /dev/null 2>&1
+echo -e "\e[32m✓\e[0m Dependencies installed"
 
-echo -e "\e[1;32m⬢ Installing Node.js...\e[0m"
-curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
-sudo apt install -y nodejs
+curl -fsSL https://deb.nodesource.com/setup_current.x | $SUDO -E bash - > /dev/null 2>&1
+$SUDO apt install -y nodejs > /dev/null 2>&1
+echo -e "\e[32m✓\e[0m Node.js installed"
 
-echo -e "\e[1;35m📦 Installing pnpm...\e[0m"
-curl -fsSL https://get.pnpm.io/install.sh | sh -
+curl -fsSL https://get.pnpm.io/install.sh | sh - > /dev/null 2>&1
 export PNPM_HOME="$HOME/.local/share/pnpm"
 export PATH="$PNPM_HOME:$PATH"
+echo -e "\e[32m✓\e[0m pnpm installed"
 
-echo -e "\e[1;34m🐰 Installing Bun...\e[0m"
-if ! command -v unzip &> /dev/null; then
-    echo -e "\e[1;33m📦 Installing unzip first...\e[0m"
-    sudo apt install -y unzip
-fi
-curl -fsSL https://bun.sh/install | bash
+curl -fsSL https://bun.sh/install | bash > /dev/null 2>&1
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+echo -e "\e[32m✓\e[0m Bun installed"
 
-echo -e "\e[1;36m⚡ Installing PM2 globally with pnpm...\e[0m"
-pnpm install -g pm2@latest
+pnpm install -g pm2@latest > /dev/null 2>&1
+echo -e "\e[32m✓\e[0m PM2 installed"
 
-echo -e "\e[1;37m☁️ Installing Cloudflared...\e[0m"
 wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
-sudo dpkg -i cloudflared-linux-amd64.deb
+$SUDO dpkg -i cloudflared-linux-amd64.deb > /dev/null 2>&1
 rm cloudflared-linux-amd64.deb
+echo -e "\e[32m✓\e[0m Cloudflared installed"
 
-echo -e "\e[1;34m🐚 Installing Zsh...\e[0m"
-sudo apt install -y zsh
+$SUDO apt install -y zsh > /dev/null 2>&1
+echo -e "\e[32m✓\e[0m Zsh installed"
 
-echo -e "\e[1;33m✨ Installing Oh My Zsh...\e[0m"
-RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended > /dev/null 2>&1
+echo -e "\e[32m✓\e[0m Oh My Zsh installed"
 
-echo -e "\e[1;32m🔌 Installing Zsh plugins...\e[0m"
+git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions > /dev/null 2>&1
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting > /dev/null 2>&1
+echo -e "\e[32m✓\e[0m Zsh plugins installed"
 
-git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-
-echo -e "\e[1;33m💾 Backing up original .zshrc...\e[0m"
 cp ~/.zshrc ~/.zshrc.backup 2>/dev/null || true
 
-echo -e "\e[1;32m🎨 Creating new .zshrc with custom prompt...\e[0m"
 cat > ~/.zshrc << 'EOF'
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME=""
@@ -81,54 +82,32 @@ alias l='ls -CF'
 DISABLE_AUTO_UPDATE="true"
 EOF
 
-echo -e "\e[1;31m🗑️ Removing ALL bash files...\e[0m"
-rm -f ~/.bashrc
-rm -f ~/.bash_history
-rm -f ~/.bash_logout
-rm -f ~/.bash_profile
-rm -f ~/.profile
+rm -f ~/.bashrc ~/.bash_history ~/.bash_logout ~/.bash_profile ~/.profile
 
-echo -e "\e[1;33m🔧 Creating minimal .bashrc that auto-starts zsh...\e[0m"
 cat > ~/.bashrc << 'EOF'
 #!/bin/bash
 exec zsh
 EOF
 
-echo -e "\e[1;32m🐚 Changing default shell to Zsh...\e[0m"
-sudo chsh -s $(which zsh) $USER
+$SUDO chsh -s $(which zsh) $CURRENT_USER > /dev/null 2>&1
+echo -e "\e[32m✓\e[0m Zsh configured"
 
-echo -e "\e[1;33m🔕 Disabling needrestart notifications...\e[0m"
-sudo sed -i 's/#$nrconf{restart} = \x27i\x27;/$nrconf{restart} = \x27a\x27;/' /etc/needrestart/needrestart.conf 2>/dev/null || true
-sudo sed -i 's/$nrconf{restart} = \x27i\x27;/$nrconf{restart} = \x27a\x27;/' /etc/needrestart/needrestart.conf 2>/dev/null || true
+$SUDO sed -i 's/#$nrconf{restart} = \x27i\x27;/$nrconf{restart} = \x27a\x27;/' /etc/needrestart/needrestart.conf 2>/dev/null || true
+$SUDO sed -i 's/$nrconf{restart} = \x27i\x27;/$nrconf{restart} = \x27a\x27;/' /etc/needrestart/needrestart.conf 2>/dev/null || true
 
-echo -e "\e[1;35m⚙️ Setting up pnpm configuration...\e[0m"
-pnpm config set auto-install-peers true
-pnpm config set package-import-method clone-or-copy
+pnpm config set auto-install-peers true > /dev/null 2>&1
+pnpm config set package-import-method clone-or-copy > /dev/null 2>&1
+echo -e "\e[32m✓\e[0m pnpm configured"
 
-echo -e "\e[1;33m🔄 Running final system update...\e[0m"
-sudo apt update -y
+$SUDO apt autoremove -y > /dev/null 2>&1
+$SUDO apt autoclean -y > /dev/null 2>&1
+echo -e "\e[32m✓\e[0m Cleanup completed"
 
-echo -e "\e[1;31m🧹 Cleaning up...\e[0m"
-sudo apt autoremove -y
-sudo apt autoclean -y
+echo -e "\n\e[1;32m✅ Installation Complete!\e[0m\n"
 
-echo -e "\e[1;36m==========================================\e[0m"
-echo -e "\e[1;36m🎉 Installation Complete!\e[0m"
-echo -e "\e[1;36m==========================================\e[0m"
-echo ""
-node -v >/dev/null 2>&1 && echo -e "  \e[1;32m⬢ Node.js $(node -v)\e[0m" || echo -e "  \e[1;32m⬢ Node.js (check with: node -v)\e[0m"
-pnpm -v >/dev/null 2>&1 && echo -e "  \e[1;35m📦 pnpm $(pnpm -v)\e[0m" || echo -e "  \e[1;35m📦 pnpm (check with: pnpm -v)\e[0m" 
-bun -v >/dev/null 2>&1 && echo -e "  \e[1;34m🐰 Bun $(bun -v)\e[0m" || echo -e "  \e[1;34m🐰 Bun (check with: bun -v)\e[0m"
-echo -e "  \e[1;36m⚡ PM2 (installed with pnpm)\e[0m"
-echo -e "  \e[1;37m☁️ Cloudflared\e[0m"
-echo -e "  \e[1;34m🐚 Zsh with plugins\e[0m"
-echo ""
-echo -e "  \e[1;32m✅ pnpm is now the DEFAULT package manager\e[0m"
-echo -e "  \e[1;31m❌ npm/yarn/npx commands are aliased to pnpm\e[0m"
-echo ""
-echo -e "  \e[1;33m🎨 Custom prompt: username@hostname:~#\e[0m"
-echo ""
-echo -e "  \e[1;31m🗑️ ALL bash files have been removed and replaced with zsh\e[0m"
-echo -e "  \e[1;32m🔧 Zsh is now your default shell!\e[0m"
-echo ""
-echo -e "  \e[1;36m🔄 Please restart your terminal or run: exec zsh\e[0m"
+echo -e "\e[1;33m🔐 Change Password Required\e[0m\n"
+passwd
+
+echo -e "\n\e[1;36m🔄 Rebooting in 5 seconds...\e[0m"
+sleep 5
+$SUDO reboot
