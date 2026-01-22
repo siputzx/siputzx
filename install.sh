@@ -17,32 +17,38 @@ echo -e "\n\e[1;36m🚀 System Setup\e[0m\n"
 
 export DEBIAN_FRONTEND=noninteractive
 
-$SUDO apt update && $SUDO apt upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" > /dev/null 2>&1
+$SUDO apt update > /dev/null 2>&1 && $SUDO apt upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m System updated"
 
 $SUDO apt install -y curl wget git build-essential unzip > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m Dependencies installed"
 
-curl -fsSL https://deb.nodesource.com/setup_current.x | $SUDO -E bash - > /dev/null 2>&1
+curl -fsSL https://deb.nodesource.com/setup_current.x -o /tmp/nodesource_setup.sh
+$SUDO -E bash /tmp/nodesource_setup.sh > /dev/null 2>&1
 $SUDO apt install -y nodejs > /dev/null 2>&1
+rm /tmp/nodesource_setup.sh
 echo -e "\e[32m✓\e[0m Node.js installed"
 
-curl -fsSL https://get.pnpm.io/install.sh | sh - > /dev/null 2>&1
+curl -fsSL https://get.pnpm.io/install.sh -o /tmp/pnpm_install.sh
+sh /tmp/pnpm_install.sh > /dev/null 2>&1
+rm /tmp/pnpm_install.sh
 export PNPM_HOME="$HOME/.local/share/pnpm"
 export PATH="$PNPM_HOME:$PATH"
 echo -e "\e[32m✓\e[0m pnpm installed"
 
-curl -fsSL https://bun.sh/install | bash > /dev/null 2>&1
+curl -fsSL https://bun.sh/install -o /tmp/bun_install.sh
+bash /tmp/bun_install.sh > /dev/null 2>&1
+rm /tmp/bun_install.sh
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 echo -e "\e[32m✓\e[0m Bun installed"
 
-pnpm install -g pm2@latest > /dev/null 2>&1
+$PNPM_HOME/pnpm install -g pm2@latest > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m PM2 installed"
 
-wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
-$SUDO dpkg -i cloudflared-linux-amd64.deb > /dev/null 2>&1
-rm cloudflared-linux-amd64.deb
+wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb -O /tmp/cloudflared.deb
+$SUDO dpkg -i /tmp/cloudflared.deb > /dev/null 2>&1
+rm /tmp/cloudflared.deb
 echo -e "\e[32m✓\e[0m Cloudflared installed"
 
 $SUDO apt install -y zsh > /dev/null 2>&1
@@ -51,8 +57,8 @@ echo -e "\e[32m✓\e[0m Zsh installed"
 RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m Oh My Zsh installed"
 
-git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions > /dev/null 2>&1
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting > /dev/null 2>&1
+git clone --quiet https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions 2>/dev/null
+git clone --quiet https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting 2>/dev/null
 echo -e "\e[32m✓\e[0m Zsh plugins installed"
 
 cp ~/.zshrc ~/.zshrc.backup 2>/dev/null || true
@@ -95,8 +101,8 @@ echo -e "\e[32m✓\e[0m Zsh configured"
 $SUDO sed -i 's/#$nrconf{restart} = \x27i\x27;/$nrconf{restart} = \x27a\x27;/' /etc/needrestart/needrestart.conf 2>/dev/null || true
 $SUDO sed -i 's/$nrconf{restart} = \x27i\x27;/$nrconf{restart} = \x27a\x27;/' /etc/needrestart/needrestart.conf 2>/dev/null || true
 
-pnpm config set auto-install-peers true > /dev/null 2>&1
-pnpm config set package-import-method clone-or-copy > /dev/null 2>&1
+$PNPM_HOME/pnpm config set auto-install-peers true > /dev/null 2>&1
+$PNPM_HOME/pnpm config set package-import-method clone-or-copy > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m pnpm configured"
 
 $SUDO apt autoremove -y > /dev/null 2>&1
