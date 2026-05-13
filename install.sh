@@ -1,13 +1,14 @@
 #!/bin/bash
 
+# by siputzx
+# bash <(curl -fsSL https://raw.githubusercontent.com/siputzx/siputzx/main/install.sh)
+
 set -e
 
 if [ "$EUID" -eq 0 ]; then
     SUDO=""
     CURRENT_USER=$SUDO_USER
-    if [ -z "$CURRENT_USER" ]; then
-        CURRENT_USER="root"
-    fi
+    [ -z "$CURRENT_USER" ] && CURRENT_USER="root"
 else
     SUDO="sudo"
     CURRENT_USER=$USER
@@ -18,13 +19,13 @@ CURRENT_SHELL=$(getent passwd "$CURRENT_USER" | cut -d: -f7)
 OS_NAME=$(. /etc/os-release 2>/dev/null && echo "$PRETTY_NAME" || uname -s)
 KERNEL=$(uname -r)
 ARCH=$(uname -m)
-CPU_MODEL=$(grep -m1 "model name" /proc/cpuinfo 2>/dev/null | cut -d: -f2 | sed 's/^ //' || echo "Unknown")
+CPU_MODEL=$(grep -m1 "model name" /proc/cpuinfo 2>/dev/null | cut -d: -f2 | sed 's/^ //')
 CPU_CORES=$(nproc 2>/dev/null || echo "?")
-RAM_TOTAL=$(awk '/MemTotal/ {printf "%.1f GB", $2/1024/1024}' /proc/meminfo 2>/dev/null || echo "Unknown")
-RAM_FREE=$(awk '/MemAvailable/ {printf "%.1f GB", $2/1024/1024}' /proc/meminfo 2>/dev/null || echo "Unknown")
+RAM_TOTAL=$(awk '/MemTotal/ {printf "%.1f GB", $2/1024/1024}' /proc/meminfo 2>/dev/null)
+RAM_FREE=$(awk '/MemAvailable/ {printf "%.1f GB", $2/1024/1024}' /proc/meminfo 2>/dev/null)
 DISK_TOTAL=$(df -h / 2>/dev/null | awk 'NR==2{print $2}')
 DISK_FREE=$(df -h / 2>/dev/null | awk 'NR==2{print $4}')
-UPTIME_STR=$(uptime -p 2>/dev/null | sed 's/up //' || echo "Unknown")
+UPTIME_STR=$(uptime -p 2>/dev/null | sed 's/up //')
 PUBLIC_IP=$(curl -fsSL --max-time 3 https://api.ipify.org 2>/dev/null || echo "Unavailable")
 
 echo -e "\n\e[1;36m  System Information\e[0m"
@@ -41,11 +42,11 @@ echo -e "  \e[90mShell   \e[0m  $CURRENT_SHELL"
 echo -e "\e[90m  ─────────────────────────────────────\e[0m\n"
 
 case "$ARCH" in
-    x86_64)        ARCH_GO="amd64";  ARCH_CF="amd64"; RUST_TARGET="x86_64-unknown-linux-gnu"      ;;
-    aarch64|arm64) ARCH_GO="arm64";  ARCH_CF="arm64";  RUST_TARGET="aarch64-unknown-linux-gnu"     ;;
-    armv7l)        ARCH_GO="armv6l"; ARCH_CF="arm";    RUST_TARGET="armv7-unknown-linux-gnueabihf" ;;
-    armv6l)        ARCH_GO="armv6l"; ARCH_CF="arm";    RUST_TARGET="arm-unknown-linux-gnueabihf"   ;;
-    i386|i686)     ARCH_GO="386";    ARCH_CF="386";    RUST_TARGET="i686-unknown-linux-gnu"        ;;
+    x86_64)        ARCH_GO="amd64";  ARCH_CF="amd64"; RUST_TARGET="x86_64-unknown-linux-gnu" ;;
+    aarch64|arm64) ARCH_GO="arm64";  ARCH_CF="arm64"; RUST_TARGET="aarch64-unknown-linux-gnu" ;;
+    armv7l)        ARCH_GO="armv6l"; ARCH_CF="arm";   RUST_TARGET="armv7-unknown-linux-gnueabihf" ;;
+    armv6l)        ARCH_GO="armv6l"; ARCH_CF="arm";   RUST_TARGET="arm-unknown-linux-gnueabihf" ;;
+    i386|i686)     ARCH_GO="386";    ARCH_CF="386";   RUST_TARGET="i686-unknown-linux-gnu" ;;
     *)
         echo -e "\e[31m✗\e[0m Unsupported architecture: $ARCH"
         exit 1
@@ -54,13 +55,19 @@ esac
 
 echo -e "\e[1;36m  Setup\e[0m\n"
 
+while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1 || \
+      fuser /var/lib/dpkg/lock >/dev/null 2>&1 || \
+      fuser /var/cache/apt/archives/lock >/dev/null 2>&1; do
+    sleep 3
+done
+
 export DEBIAN_FRONTEND=noninteractive
 
 $SUDO apt update > /dev/null 2>&1
 $SUDO apt upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m System updated"
 
-$SUDO apt install -y curl wget git build-essential unzip zsh > /dev/null 2>&1
+$SUDO apt install -y curl wget git build-essential unzip zsh xfce4 xfce4-goodies > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m Dependencies installed"
 
 curl -fsSL https://deb.nodesource.com/setup_lts.x | $SUDO bash - > /dev/null 2>&1
@@ -102,29 +109,39 @@ echo -e "\e[32m✓\e[0m PM2 installed"
 
 CF_DEB="cloudflared-linux-${ARCH_CF}.deb"
 wget -q "https://github.com/cloudflare/cloudflared/releases/latest/download/${CF_DEB}"
-$SUDO dpkg -i "$CF_DEB" > /dev/null 2>&1
+$SUDO dpkg -i "$CF_DEB" > /dev/null 2>&1 || $SUDO apt install -f -y > /dev/null 2>&1
 rm -f "$CF_DEB"
 echo -e "\e[32m✓\e[0m Cloudflared installed"
 
 ZSH_PATH=$(which zsh)
 echo -e "\e[32m✓\e[0m Zsh installed"
 
-RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended > /dev/null 2>&1
+rm -rf ~/.oh-my-zsh
+
+RUNZSH=no CHSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended > /dev/null 2>&1 || true
+
+mkdir -p ~/.oh-my-zsh/custom/plugins
+
 echo -e "\e[32m✓\e[0m Oh My Zsh installed"
 
-git clone --depth=1 -q https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions 2>/dev/null || true
-git clone --depth=1 -q https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting 2>/dev/null || true
+git clone --depth=1 -q https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions 2>/dev/null || true
+git clone --depth=1 -q https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting 2>/dev/null || true
+
 echo -e "\e[32m✓\e[0m Zsh plugins installed"
 
 cat > ~/.zshrc << 'EOF'
 export ZSH="$HOME/.oh-my-zsh"
+
 ZSH_THEME=""
+
 plugins=(
     git
     zsh-autosuggestions
     zsh-syntax-highlighting
 )
+
 source $ZSH/oh-my-zsh.sh
+
 PROMPT='%F{green}%n%f%F{white}@%f%F{blue}%m%f%F{white}:%f%F{yellow}%~%f%F{white}#%f '
 
 export BUN_INSTALL="$HOME/.bun"
@@ -178,17 +195,22 @@ fi
 
 pnpm config set package-import-method clone-or-copy > /dev/null 2>&1 || true
 echo "auto-install-peers=true" >> ~/.npmrc
+
 echo -e "\e[32m✓\e[0m pnpm configured"
 
 $SUDO apt autoremove -y > /dev/null 2>&1
 $SUDO apt autoclean -y > /dev/null 2>&1
+
 echo -e "\e[32m✓\e[0m Cleanup done"
 
 echo -e "\n\e[1;32m  Done\e[0m\n"
 
 echo -e "\e[1;33m  Change Password\e[0m\n"
+
 passwd
 
 echo -e "\n\e[1;36m  Rebooting in 5 seconds...\e[0m"
+
 sleep 5
+
 $SUDO reboot
