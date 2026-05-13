@@ -17,7 +17,6 @@ else
 fi
 
 CURRENT_SHELL=$(getent passwd "$CURRENT_USER" | cut -d: -f7)
-ZSH_PATH=$(which zsh 2>/dev/null || echo "")
 
 OS_NAME=$(. /etc/os-release 2>/dev/null && echo "$PRETTY_NAME" || uname -s)
 KERNEL=$(uname -r)
@@ -70,12 +69,16 @@ curl -fsSL https://deb.nodesource.com/setup_lts.x | $SUDO bash - > /dev/null 2>&
 $SUDO apt install -y nodejs > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m Node.js installed"
 
-curl -fsSL https://get.pnpm.io/install.sh | sh - > /dev/null 2>&1
+curl -fsSL https://get.pnpm.io/install.sh -o /tmp/pnpm-install.sh
+sh /tmp/pnpm-install.sh > /dev/null 2>&1
+rm /tmp/pnpm-install.sh
 export PNPM_HOME="$HOME/.local/share/pnpm"
 export PATH="$PNPM_HOME:$PATH"
 echo -e "\e[32m✓\e[0m pnpm installed"
 
-curl -fsSL https://bun.sh/install | bash > /dev/null 2>&1
+curl -fsSL https://bun.sh/install -o /tmp/bun-install.sh
+bash /tmp/bun-install.sh > /dev/null 2>&1
+rm /tmp/bun-install.sh
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 echo -e "\e[32m✓\e[0m Bun installed"
@@ -89,7 +92,10 @@ export GOPATH="$HOME/go"
 export PATH="/usr/local/go/bin:$GOPATH/bin:$PATH"
 echo -e "\e[32m✓\e[0m Go installed (${GO_VERSION})"
 
-curl -fsSL https://sh.rustup.rs | sh -s -- -y --no-modify-path > /dev/null 2>&1
+curl -fsSL https://sh.rustup.rs -o /tmp/rustup-init.sh
+chmod +x /tmp/rustup-init.sh
+/tmp/rustup-init.sh -y --no-modify-path > /dev/null 2>&1
+rm /tmp/rustup-init.sh
 export CARGO_HOME="$HOME/.cargo"
 export RUSTUP_HOME="$HOME/.rustup"
 export PATH="$CARGO_HOME/bin:$PATH"
