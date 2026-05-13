@@ -1,13 +1,7 @@
-
 #!/bin/bash
 
-# ╔═══════════════════════════════════════╗
-# ║         made by siputzx              ║
-# ║   github.com/siputzx/setup           ║
-# ╚═══════════════════════════════════════╝
-#
-# Usage:
-#   bash <(curl -fsSL https://raw.githubusercontent.com/siputzx/setup/main/setup.sh)
+# by siputzx
+# bash <(curl -fsSL https://raw.githubusercontent.com/siputzx/siputzx/main/install.sh)
 
 set -e
 
