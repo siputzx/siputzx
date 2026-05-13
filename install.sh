@@ -72,8 +72,8 @@ echo -e "\e[32m✓\e[0m Node.js installed"
 curl -fsSL https://get.pnpm.io/install.sh -o /tmp/pnpm-install.sh
 sh /tmp/pnpm-install.sh > /dev/null 2>&1
 rm /tmp/pnpm-install.sh
-export PNPM_HOME="$HOME/.local/share/pnpm/bin"
-export PATH="$PNPM_HOME:$PATH"
+export PNPM_HOME="$HOME/.local/share/pnpm"
+export PATH="$PNPM_HOME/bin:$PATH"
 echo -e "\e[32m✓\e[0m pnpm installed"
 
 curl -fsSL https://bun.sh/install -o /tmp/bun-install.sh
@@ -134,8 +134,8 @@ PROMPT='%F{green}%n%f%F{white}@%f%F{blue}%m%f%F{white}:%f%F{yellow}%~%f%F{white}
 
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
-export PNPM_HOME="$HOME/.local/share/pnpm/bin"
-export PATH="$PNPM_HOME:$PATH"
+export PNPM_HOME="$HOME/.local/share/pnpm"
+export PATH="$PNPM_HOME/bin:$PATH"
 export GOPATH="$HOME/go"
 export PATH="/usr/local/go/bin:$GOPATH/bin:$PATH"
 export RUSTUP_HOME="$HOME/.rustup"
