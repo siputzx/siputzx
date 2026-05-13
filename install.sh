@@ -67,7 +67,7 @@ $SUDO apt update > /dev/null 2>&1
 $SUDO apt upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m System updated"
 
-$SUDO apt install -y curl wget git build-essential unzip zsh xfce4 xfce4-goodies > /dev/null 2>&1
+$SUDO apt install -y curl wget git build-essential unzip zsh > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m Dependencies installed"
 
 curl -fsSL https://deb.nodesource.com/setup_lts.x | $SUDO bash - > /dev/null 2>&1
