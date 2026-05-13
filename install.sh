@@ -72,7 +72,7 @@ echo -e "\e[32m✓\e[0m Node.js installed"
 curl -fsSL https://get.pnpm.io/install.sh -o /tmp/pnpm-install.sh
 sh /tmp/pnpm-install.sh > /dev/null 2>&1
 rm /tmp/pnpm-install.sh
-export PNPM_HOME="$HOME/.local/share/pnpm"
+export PNPM_HOME="$HOME/.local/share/pnpm/bin"
 export PATH="$PNPM_HOME:$PATH"
 echo -e "\e[32m✓\e[0m pnpm installed"
 
@@ -99,9 +99,9 @@ chmod +x /tmp/rustup-init
 /tmp/rustup-init -y --no-modify-path --default-toolchain stable --profile default > /dev/null 2>&1
 rm /tmp/rustup-init
 export PATH="$CARGO_HOME/bin:$PATH"
-echo -e "\e[32m✓\e[0m Rust installed ($(rustc --version 2>/dev/null | cut -d' ' -f2)) — rustc, cargo, rustfmt, clippy"
+echo -e "\e[32m✓\e[0m Rust installed ($(rustc --version 2>/dev/null | cut -d' ' -f2))"
 
-$PNPM_HOME/pnpm install -g pm2@latest > /dev/null 2>&1
+pnpm install -g pm2@latest > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m PM2 installed"
 
 CF_DEB="cloudflared-linux-${ARCH_CF}.deb"
@@ -134,7 +134,7 @@ PROMPT='%F{green}%n%f%F{white}@%f%F{blue}%m%f%F{white}:%f%F{yellow}%~%f%F{white}
 
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
-export PNPM_HOME="$HOME/.local/share/pnpm"
+export PNPM_HOME="$HOME/.local/share/pnpm/bin"
 export PATH="$PNPM_HOME:$PATH"
 export GOPATH="$HOME/go"
 export PATH="/usr/local/go/bin:$GOPATH/bin:$PATH"
@@ -182,8 +182,8 @@ echo -e "\e[32m✓\e[0m Shell migration configured"
 $SUDO sed -i 's/#$nrconf{restart} = \x27i\x27;/$nrconf{restart} = \x27a\x27;/' /etc/needrestart/needrestart.conf 2>/dev/null || true
 $SUDO sed -i 's/$nrconf{restart} = \x27i\x27;/$nrconf{restart} = \x27a\x27;/' /etc/needrestart/needrestart.conf 2>/dev/null || true
 
-$PNPM_HOME/pnpm config set auto-install-peers true > /dev/null 2>&1
-$PNPM_HOME/pnpm config set package-import-method clone-or-copy > /dev/null 2>&1
+pnpm config set auto-install-peers true > /dev/null 2>&1
+pnpm config set package-import-method clone-or-copy > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m pnpm configured"
 
 $SUDO apt autoremove -y < /dev/null > /dev/null 2>&1
