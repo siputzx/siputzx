@@ -101,7 +101,7 @@ rm /tmp/rustup-init
 export PATH="$CARGO_HOME/bin:$PATH"
 echo -e "\e[32m✓\e[0m Rust installed ($(rustc --version 2>/dev/null | cut -d' ' -f2))"
 
-pnpm install -g pm2@latest > /dev/null 2>&1
+"$PNPM_HOME/bin/pnpm" install -g pm2@latest > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m PM2 installed"
 
 CF_DEB="cloudflared-linux-${ARCH_CF}.deb"
