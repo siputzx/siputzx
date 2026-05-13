@@ -5,6 +5,8 @@
 
 set -e
 
+exec < /dev/tty
+
 if [ "$EUID" -eq 0 ]; then
     SUDO=""
     CURRENT_USER=$SUDO_USER
@@ -62,11 +64,11 @@ export DEBIAN_FRONTEND=noninteractive
 $SUDO apt update > /dev/null 2>&1 && $SUDO apt upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m System updated"
 
-$SUDO apt install -y curl wget git build-essential unzip > /dev/null 2>&1
+$SUDO apt install -y curl wget git build-essential unzip < /dev/null > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m Dependencies installed"
 
 curl -fsSL https://deb.nodesource.com/setup_lts.x | $SUDO bash - > /dev/null 2>&1
-$SUDO apt install -y nodejs > /dev/null 2>&1
+$SUDO apt install -y nodejs < /dev/null > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m Node.js installed"
 
 curl -fsSL https://get.pnpm.io/install.sh -o /tmp/pnpm-install.sh
@@ -110,7 +112,7 @@ $SUDO dpkg -i "$CF_DEB" > /dev/null 2>&1
 rm "$CF_DEB"
 echo -e "\e[32m✓\e[0m Cloudflared installed"
 
-$SUDO apt install -y zsh > /dev/null 2>&1
+$SUDO apt install -y zsh < /dev/null > /dev/null 2>&1
 ZSH_PATH=$(which zsh)
 echo -e "\e[32m✓\e[0m Zsh installed"
 
@@ -186,8 +188,8 @@ $PNPM_HOME/pnpm config set auto-install-peers true > /dev/null 2>&1
 $PNPM_HOME/pnpm config set package-import-method clone-or-copy > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m pnpm configured"
 
-$SUDO apt autoremove -y > /dev/null 2>&1
-$SUDO apt autoclean -y > /dev/null 2>&1
+$SUDO apt autoremove -y < /dev/null > /dev/null 2>&1
+$SUDO apt autoclean -y < /dev/null > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m Cleanup done"
 
 echo -e "\n\e[1;32m  Done\e[0m\n"
