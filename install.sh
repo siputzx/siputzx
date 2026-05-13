@@ -142,11 +142,6 @@ export RUSTUP_HOME="$HOME/.rustup"
 export CARGO_HOME="$HOME/.cargo"
 export PATH="$CARGO_HOME/bin:$PATH"
 
-export PATH=$(echo $PATH | sed 's|:[^:]*/node_modules/[^:]*||g')
-alias npm="echo 'Use pnpm instead!' && pnpm"
-alias yarn="echo 'Use pnpm instead!' && pnpm"
-alias npx="echo 'Use pnpm dlx instead!' && pnpm dlx"
-export npm_config_prefix="$HOME/.local/share/pnpm"
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
