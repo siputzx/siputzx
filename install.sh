@@ -5,8 +5,6 @@
 
 set -e
 
-exec < /dev/tty
-
 if [ "$EUID" -eq 0 ]; then
     SUDO=""
     CURRENT_USER=$SUDO_USER
@@ -46,11 +44,11 @@ echo -e "  \e[90mShell   \e[0m  $CURRENT_SHELL"
 echo -e "\e[90m  ─────────────────────────────────────\e[0m\n"
 
 case "$ARCH" in
-    x86_64)        ARCH_GO="amd64";  ARCH_CF="amd64" ;;
-    aarch64|arm64) ARCH_GO="arm64";  ARCH_CF="arm64" ;;
-    armv7l)        ARCH_GO="armv6l"; ARCH_CF="arm"   ;;
-    armv6l)        ARCH_GO="armv6l"; ARCH_CF="arm"   ;;
-    i386|i686)     ARCH_GO="386";    ARCH_CF="386"   ;;
+    x86_64)        ARCH_GO="amd64";  ARCH_CF="amd64"; RUST_TARGET="x86_64-unknown-linux-gnu"      ;;
+    aarch64|arm64) ARCH_GO="arm64";  ARCH_CF="arm64";  RUST_TARGET="aarch64-unknown-linux-gnu"     ;;
+    armv7l)        ARCH_GO="armv6l"; ARCH_CF="arm";    RUST_TARGET="armv7-unknown-linux-gnueabihf" ;;
+    armv6l)        ARCH_GO="armv6l"; ARCH_CF="arm";    RUST_TARGET="arm-unknown-linux-gnueabihf"   ;;
+    i386|i686)     ARCH_GO="386";    ARCH_CF="386";    RUST_TARGET="i686-unknown-linux-gnu"        ;;
     *)
         echo -e "\e[31m✗\e[0m Unsupported architecture: $ARCH"
         exit 1
@@ -94,14 +92,14 @@ export GOPATH="$HOME/go"
 export PATH="/usr/local/go/bin:$GOPATH/bin:$PATH"
 echo -e "\e[32m✓\e[0m Go installed (${GO_VERSION})"
 
-curl -fsSL https://sh.rustup.rs -o /tmp/rustup-init.sh
-chmod +x /tmp/rustup-init.sh
-/tmp/rustup-init.sh -y --no-modify-path > /dev/null 2>&1
-rm /tmp/rustup-init.sh
-export CARGO_HOME="$HOME/.cargo"
 export RUSTUP_HOME="$HOME/.rustup"
+export CARGO_HOME="$HOME/.cargo"
+curl -fsSL "https://static.rust-lang.org/rustup/dist/${RUST_TARGET}/rustup-init" -o /tmp/rustup-init
+chmod +x /tmp/rustup-init
+/tmp/rustup-init -y --no-modify-path --default-toolchain stable --profile default > /dev/null 2>&1
+rm /tmp/rustup-init
 export PATH="$CARGO_HOME/bin:$PATH"
-echo -e "\e[32m✓\e[0m Rust installed ($(rustc --version 2>/dev/null | cut -d' ' -f2))"
+echo -e "\e[32m✓\e[0m Rust installed ($(rustc --version 2>/dev/null | cut -d' ' -f2)) — rustc, cargo, rustfmt, clippy"
 
 $PNPM_HOME/pnpm install -g pm2@latest > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m PM2 installed"
@@ -140,8 +138,8 @@ export PNPM_HOME="$HOME/.local/share/pnpm"
 export PATH="$PNPM_HOME:$PATH"
 export GOPATH="$HOME/go"
 export PATH="/usr/local/go/bin:$GOPATH/bin:$PATH"
-export CARGO_HOME="$HOME/.cargo"
 export RUSTUP_HOME="$HOME/.rustup"
+export CARGO_HOME="$HOME/.cargo"
 export PATH="$CARGO_HOME/bin:$PATH"
 
 export PATH=$(echo $PATH | sed 's|:[^:]*/node_modules/[^:]*||g')
