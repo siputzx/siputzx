@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# by siputzx
-# bash <(curl -fsSL https://raw.githubusercontent.com/siputzx/siputzx/main/install.sh)
-
 set -e
 
 if [ "$EUID" -eq 0 ]; then
@@ -59,26 +56,25 @@ echo -e "\e[1;36m  Setup\e[0m\n"
 
 export DEBIAN_FRONTEND=noninteractive
 
-$SUDO apt update > /dev/null 2>&1 && $SUDO apt upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" > /dev/null 2>&1
+$SUDO apt update > /dev/null 2>&1
+$SUDO apt upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m System updated"
 
-$SUDO apt install -y curl wget git build-essential unzip < /dev/null > /dev/null 2>&1
+$SUDO apt install -y curl wget git build-essential unzip zsh > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m Dependencies installed"
 
 curl -fsSL https://deb.nodesource.com/setup_lts.x | $SUDO bash - > /dev/null 2>&1
-$SUDO apt install -y nodejs < /dev/null > /dev/null 2>&1
+$SUDO apt install -y nodejs > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m Node.js installed"
 
-curl -fsSL https://get.pnpm.io/install.sh -o /tmp/pnpm-install.sh
-sh /tmp/pnpm-install.sh > /dev/null 2>&1
-rm /tmp/pnpm-install.sh
+npm install -g pnpm@latest > /dev/null 2>&1
 export PNPM_HOME="$HOME/.local/share/pnpm"
 export PATH="$PNPM_HOME/bin:$PATH"
 echo -e "\e[32m✓\e[0m pnpm installed"
 
 curl -fsSL https://bun.sh/install -o /tmp/bun-install.sh
 bash /tmp/bun-install.sh > /dev/null 2>&1
-rm /tmp/bun-install.sh
+rm -f /tmp/bun-install.sh
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 echo -e "\e[32m✓\e[0m Bun installed"
@@ -87,7 +83,7 @@ GO_VERSION=$(curl -fsSL "https://go.dev/VERSION?m=text" | head -1)
 curl -fsSL "https://go.dev/dl/${GO_VERSION}.linux-${ARCH_GO}.tar.gz" -o /tmp/go.tar.gz
 $SUDO rm -rf /usr/local/go
 $SUDO tar -C /usr/local -xzf /tmp/go.tar.gz
-rm /tmp/go.tar.gz
+rm -f /tmp/go.tar.gz
 export GOPATH="$HOME/go"
 export PATH="/usr/local/go/bin:$GOPATH/bin:$PATH"
 echo -e "\e[32m✓\e[0m Go installed (${GO_VERSION})"
@@ -97,7 +93,7 @@ export CARGO_HOME="$HOME/.cargo"
 curl -fsSL "https://static.rust-lang.org/rustup/dist/${RUST_TARGET}/rustup-init" -o /tmp/rustup-init
 chmod +x /tmp/rustup-init
 /tmp/rustup-init -y --no-modify-path --default-toolchain stable --profile default > /dev/null 2>&1
-rm /tmp/rustup-init
+rm -f /tmp/rustup-init
 export PATH="$CARGO_HOME/bin:$PATH"
 echo -e "\e[32m✓\e[0m Rust installed ($(rustc --version 2>/dev/null | cut -d' ' -f2))"
 
@@ -107,18 +103,17 @@ echo -e "\e[32m✓\e[0m PM2 installed"
 CF_DEB="cloudflared-linux-${ARCH_CF}.deb"
 wget -q "https://github.com/cloudflare/cloudflared/releases/latest/download/${CF_DEB}"
 $SUDO dpkg -i "$CF_DEB" > /dev/null 2>&1
-rm "$CF_DEB"
+rm -f "$CF_DEB"
 echo -e "\e[32m✓\e[0m Cloudflared installed"
 
-$SUDO apt install -y zsh < /dev/null > /dev/null 2>&1
 ZSH_PATH=$(which zsh)
 echo -e "\e[32m✓\e[0m Zsh installed"
 
 RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m Oh My Zsh installed"
 
-git clone --depth=1 -q https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions 2>/dev/null
-git clone --depth=1 -q https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting 2>/dev/null
+git clone --depth=1 -q https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions 2>/dev/null || true
+git clone --depth=1 -q https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting 2>/dev/null || true
 echo -e "\e[32m✓\e[0m Zsh plugins installed"
 
 cat > ~/.zshrc << 'EOF'
@@ -134,10 +129,13 @@ PROMPT='%F{green}%n%f%F{white}@%f%F{blue}%m%f%F{white}:%f%F{yellow}%~%f%F{white}
 
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
 export PNPM_HOME="$HOME/.local/share/pnpm"
 export PATH="$PNPM_HOME/bin:$PATH"
+
 export GOPATH="$HOME/go"
 export PATH="/usr/local/go/bin:$GOPATH/bin:$PATH"
+
 export RUSTUP_HOME="$HOME/.rustup"
 export CARGO_HOME="$HOME/.cargo"
 export PATH="$CARGO_HOME/bin:$PATH"
@@ -145,13 +143,12 @@ export PATH="$CARGO_HOME/bin:$PATH"
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
+
 DISABLE_AUTO_UPDATE="true"
 EOF
 
 if [ "$CURRENT_SHELL" != "$ZSH_PATH" ]; then
-    if ! grep -q "$ZSH_PATH" /etc/shells; then
-        echo "$ZSH_PATH" | $SUDO tee -a /etc/shells > /dev/null
-    fi
+    grep -qxF "$ZSH_PATH" /etc/shells || echo "$ZSH_PATH" | $SUDO tee -a /etc/shells > /dev/null
     $SUDO chsh -s "$ZSH_PATH" "$CURRENT_USER" > /dev/null 2>&1
     echo -e "\e[32m✓\e[0m Default shell changed: bash → zsh"
 else
@@ -174,15 +171,17 @@ EOF
 
 echo -e "\e[32m✓\e[0m Shell migration configured"
 
-$SUDO sed -i 's/#$nrconf{restart} = \x27i\x27;/$nrconf{restart} = \x27a\x27;/' /etc/needrestart/needrestart.conf 2>/dev/null || true
-$SUDO sed -i 's/$nrconf{restart} = \x27i\x27;/$nrconf{restart} = \x27a\x27;/' /etc/needrestart/needrestart.conf 2>/dev/null || true
+if [ -f /etc/needrestart/needrestart.conf ]; then
+    sed -i "s/#\$nrconf{restart} = 'i';/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf || true
+    sed -i "s/\$nrconf{restart} = 'i';/\$nrconf{restart} = 'a';/" /etc/needrestart/needrestart.conf || true
+fi
 
-pnpm config set auto-install-peers true > /dev/null 2>&1
-pnpm config set package-import-method clone-or-copy > /dev/null 2>&1
+pnpm config set package-import-method clone-or-copy > /dev/null 2>&1 || true
+echo "auto-install-peers=true" >> ~/.npmrc
 echo -e "\e[32m✓\e[0m pnpm configured"
 
-$SUDO apt autoremove -y < /dev/null > /dev/null 2>&1
-$SUDO apt autoclean -y < /dev/null > /dev/null 2>&1
+$SUDO apt autoremove -y > /dev/null 2>&1
+$SUDO apt autoclean -y > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m Cleanup done"
 
 echo -e "\n\e[1;32m  Done\e[0m\n"
