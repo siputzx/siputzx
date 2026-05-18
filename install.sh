@@ -70,6 +70,9 @@ echo -e "\e[32m✓\e[0m System updated"
 $SUDO apt install -y curl wget git build-essential unzip zsh > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m Dependencies installed"
 
+$SUDO apt install -y ffmpeg imagemagick webp libwebp-dev > /dev/null 2>&1
+echo -e "\e[32m✓\e[0m Media tools installed"
+
 curl -fsSL https://deb.nodesource.com/setup_lts.x | $SUDO bash - > /dev/null 2>&1
 $SUDO apt install -y nodejs > /dev/null 2>&1
 echo -e "\e[32m✓\e[0m Node.js installed"
